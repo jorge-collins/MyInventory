@@ -2,11 +2,15 @@ package com.corosoftware.myinventory;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -28,6 +32,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Toolbar toolbar;
+
     // URL archivo real
     // https://docs.google.com/spreadsheets/d/1xXWnPwy2ElBKb4oFzLSGFsMmmoM4XH2Kd_wxwNCSOQ4/edit?usp=sharing
 
@@ -44,16 +50,39 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar loadingPB;
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_import_data, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.bYes:
+                Toast.makeText(MainActivity.this, "YES", Toast.LENGTH_SHORT).show();
+            case R.id.bNo:
+                Toast.makeText(MainActivity.this, "NO", Toast.LENGTH_SHORT).show();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.action_bar_title_import_data);
+        setSupportActionBar(toolbar);
 
         itemModalArrayList = new ArrayList<>();
 
         itemRV = findViewById(R.id.idRVItems);
         loadingPB = findViewById(R.id.idPBLoading);
 
-        getDataFromAPI(fileURL);
+//        getDataFromAPI(fileURL);
     }
 
 
@@ -66,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-//                Toast.makeText(MainActivity.this, "onResponse", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "onResponse", Toast.LENGTH_LONG).show();
 
                 loadingPB.setVisibility(View.GONE);
 
@@ -128,7 +157,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//    private boolean arrayItemIsNullAtIndex()
     private String getArrayItemValueAt( JSONArray jsonArray, int index, String key ) throws JSONException {
 
         return jsonArray.isNull(index) ? " " : jsonArray.getJSONObject(index).get(key).toString();
