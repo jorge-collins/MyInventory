@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -17,16 +16,13 @@ import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
+
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import java.util.ArrayList;
 
@@ -39,10 +35,6 @@ public class MainActivity extends AppCompatActivity {
 
     // URL ya editado con el id del archivo real
     public String fileURL = "https://docs.google.com/spreadsheets/u/0/d/1xXWnPwy2ElBKb4oFzLSGFsMmmoM4XH2Kd_wxwNCSOQ4/gviz/tq?tqx=out:json";
-
-    // URL ya editado con el id del archivo pruebas
-//    public String fileURL = "https://docs.google.com/spreadsheets/u/0/d/1TSoMvXROXYPvGh8Atg0C66m-bT1XLU1b5ds4GnMvgyc/gviz/tq?tqx=out:json";
-
 
     private ArrayList<ItemModal> itemModalArrayList;
     private ItemRVAdapter itemRVAdapter;
@@ -57,12 +49,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.bYes:
+        String itemId = item.toString();
+        Log.d("DATAitemId", itemId);
+        switch (itemId) {
+            case "Yes":
                 Toast.makeText(MainActivity.this, "YES", Toast.LENGTH_SHORT).show();
-            case R.id.bNo:
+                break;
+            case "No":
                 Toast.makeText(MainActivity.this, "NO", Toast.LENGTH_SHORT).show();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -74,15 +69,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.action_bar_title_import_data);
-        setSupportActionBar(toolbar);
+        toolbar.setTitle(R.string.action_bar_loading);
 
         itemModalArrayList = new ArrayList<>();
 
         itemRV = findViewById(R.id.idRVItems);
         loadingPB = findViewById(R.id.idPBLoading);
 
-//        getDataFromAPI(fileURL);
+        getDataFromAPI(fileURL);
     }
 
 
@@ -92,82 +86,78 @@ public class MainActivity extends AppCompatActivity {
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET,
-                url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Toast.makeText(MainActivity.this, "onResponse", Toast.LENGTH_LONG).show();
+                url, response -> {
 
-                loadingPB.setVisibility(View.GONE);
+                    toolbar.setTitle(R.string.action_bar_title_import_data);
+                    setSupportActionBar(toolbar);
+                    loadingPB.setVisibility(View.GONE);
 
-                // Recortamos el inicio y el final del string
-                String jsonString = response.toString().substring(47, response.length()-2);
+                    // Recortamos el inicio y el final del string
+                    String jsonString = response.substring(47, response.length()-2);
 
-                try {
-                    // Convertimos el string a un objeto json
-                    JSONObject jsonObject = new JSONObject(jsonString);
+                    try {
+                        // Convertimos el string a un objeto json
+                        JSONObject jsonObject = new JSONObject(jsonString);
+                        JSONObject jsonTable1 = jsonObject.getJSONObject("table");
+                        JSONArray arrayRows = jsonTable1.getJSONArray("rows");
 
-                    JSONObject jsonTable1 = jsonObject.getJSONObject("table");
-//                    Log.d("DATAjsonTable1", jsonTable1.toString());
+                        for (int i = 0; i < arrayRows.length(); i++) {
+                            JSONObject entryObj = arrayRows.getJSONObject(i);
 
-                    JSONArray arrayRows = jsonTable1.getJSONArray("rows");
-//                    Log.d("DATAarrayRows", arrayRows.toString());
-                    for (int i = 0; i < arrayRows.length(); i++) {
-                        JSONObject entryObj = arrayRows.getJSONObject(i);
-//                        Log.d("DATAentryObj", entryObj.toString());
+                            // Recuperamos cada renglon
+                            JSONArray arrayC = entryObj.getJSONArray("c");
 
-                        JSONArray arrayC = entryObj.getJSONArray("c");
-                        Log.d("DATAarrayC", arrayC.toString());
+                            String rc = getArrayItemValueAt(arrayC, 3, "f");
+                            String description = getArrayItemValueAt(arrayC,4, "v");
+                            String brand = getArrayItemValueAt(arrayC, 5, "v");
 
-                        String rc = arrayC.getJSONObject(3).get("f").toString();
-                        String description = arrayC.getJSONObject(4).get("v").toString();
-                        String brand = getArrayItemValueAt(arrayC, 5, "v");
-//                        String brand = arrayC.getJSONObject(5).get("v").toString();
+                            // Recuperamos el enlace compartido de la imagen
+                            String image = getArrayItemValueAt(arrayC, 11, "v");
+                            String imageLink = "https://freesvg.org/img/Image-Not-Found.png";
+                            if (image.isEmpty()) { Log.d("DATAimage", "[" + image + "] is empty"); }
+                            else {
+                                // En los links para compartir de Google, cuando es una imagen
+                                // se formatea como -download- para que se pueda visualizar correctamente
+                                String[] p = image.split("/");
+                                imageLink = "https://drive.google.com/uc?export=download&id=" + p[5];
+                            }
+                            String lastLocation = getArrayItemValueAt(arrayC, 16, "v");
 
-                        String image = arrayC.getJSONObject(11).get("v").toString();
-                        String[] p = image.split("/");
-                        String imageLink = "https://drive.google.com/uc?export=download&id="+p[5];
-                        Log.d("DATAimageLink", imageLink);
+                            itemModalArrayList.add( new ItemModal(description, brand, rc, imageLink, lastLocation) );
 
-//                        String image = "https://reqres.in/img/faces/1-image.jpg";     // Este ejemplo si funciona, es algo con Google
-                        itemModalArrayList.add( new ItemModal(description, brand, rc, imageLink) );
+    //                        Passing array list to our adapter class
+                            itemRVAdapter = new ItemRVAdapter(itemModalArrayList, MainActivity.this);
 
-//                        Passing array list to our adapter class
-                        itemRVAdapter = new ItemRVAdapter(itemModalArrayList, MainActivity.this);
+    //                        Setting layout manager to our recycler view
+                            itemRV.setLayoutManager(new LinearLayoutManager(MainActivity.this));
 
-//                        Setting layout manager to our recycler view
-                        itemRV.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+    //                        Setting adapter to our recycler view
+                            itemRV.setAdapter(itemRVAdapter);
+                        }
 
-//                        Setting adapter to our recycler view
-                        itemRV.setAdapter(itemRVAdapter);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.d("ERRORe", e.toString());
+                        toolbar.setTitle("Please, contact support...");
+                        Toast.makeText(MainActivity.this, "Fail to get data (JSONException).", Toast.LENGTH_LONG).show();
+                        loadingPB.setVisibility(View.GONE);
                     }
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                }, error -> {
+                    Log.d("ERRORvolley", error.toString());
+                    toolbar.setTitle("Please, confirm source...");
+                    Toast.makeText(MainActivity.this, "Fail to get data (volley), confirm source.", Toast.LENGTH_LONG).show();
+                    loadingPB.setVisibility(View.GONE);
+                });
 
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(MainActivity.this, "Fail to get data..", Toast.LENGTH_SHORT).show();
-            }
-        });
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
-
     }
 
     private String getArrayItemValueAt( JSONArray jsonArray, int index, String key ) throws JSONException {
 
-        return jsonArray.isNull(index) ? " " : jsonArray.getJSONObject(index).get(key).toString();
-
-//        String result = "";
-//        if ( !jsonArray[index].equals(null) ) {
-//            result = jsonArray.getJSONObject(index).get(key);
-//        } else {
-//            return " ";
-//        };
-//        return result;
+        return jsonArray.isNull(index) ? "" : jsonArray.getJSONObject(index).get(key).toString();
     }
+
 }
 

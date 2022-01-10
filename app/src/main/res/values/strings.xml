@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">MyInventory</string>
     <string name="action_bar_title_import_data">Import data?</string>
+    <string name="action_bar_loading">Loading…</string>
     <string name="menu_import_Yes">Yes</string>
     <string name="menu_import_No">No</string>
 </resources>

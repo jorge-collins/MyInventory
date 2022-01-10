@@ -6,6 +6,7 @@ public class ItemModal {
     private String brand;
     private String rc;
     private String image;
+    private String location;
 
     public String getDescription() {
         return description;
@@ -39,12 +40,17 @@ public class ItemModal {
         this.image = image;
     }
 
-    public ItemModal(String description, String brand, String rc, String image) {
+    public String getLocation() { return location; }
+
+    public void setLocation(String location) { this.location = location; }
+
+    public ItemModal(String description, String brand, String rc, String image, String location) {
 
         this.description = description;
         this.brand = brand;
         this.rc = rc;
         this.image = image;
+        this.location = location;
     }
 
 }

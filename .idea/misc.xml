@@ -5,6 +5,7 @@
       <map>
         <entry key="app/src/main/res/drawable/vector_check.xml" value="0.30925925925925923" />
         <entry key="app/src/main/res/drawable/vector_close.xml" value="0.4953125" />
+        <entry key="app/src/main/res/drawable/vector_image_not.xml" value="0.2828125" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.28072916666666664" />
         <entry key="app/src/main/res/layout/item_rv_itemlist.xml" value="0.23302938196555217" />
         <entry key="app/src/main/res/menu/menu_import_data.xml" value="0.21666666666666667" />
