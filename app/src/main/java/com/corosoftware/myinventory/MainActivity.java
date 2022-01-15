@@ -6,6 +6,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -27,6 +29,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+
+    private DBHandler dbHandler;
 
     private Toolbar toolbar;
 
@@ -53,10 +57,22 @@ public class MainActivity extends AppCompatActivity {
         Log.d("DATAitemId", itemId);
         switch (itemId) {
             case "Yes":
-                Toast.makeText(MainActivity.this, "YES", Toast.LENGTH_SHORT).show();
+                // Oculta el listado
+                itemRV.setVisibility(View.GONE);
+                // Muestra el spinning
+                loadingPB.setVisibility(View.VISIBLE);
+                // Genera la db
+                createDB();
+                // Oculta el spinning
+                loadingPB.setVisibility(View.GONE);
+
+                // Inicia la actividad que va a mostrar todos los elementos en la db
+                Intent i = new Intent(MainActivity.this, ViewItemsActivity.class);
+                startActivity(i);
                 break;
             case "No":
-                Toast.makeText(MainActivity.this, "NO", Toast.LENGTH_SHORT).show();
+                itemRV.setVisibility(View.VISIBLE);
+                Toast.makeText(MainActivity.this, "[ Return to previous activity ]", Toast.LENGTH_SHORT).show();
                 break;
         }
 
@@ -68,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        dbHandler = new DBHandler(MainActivity.this);
+
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.action_bar_loading);
 
@@ -76,9 +94,33 @@ public class MainActivity extends AppCompatActivity {
         itemRV = findViewById(R.id.idRVItems);
         loadingPB = findViewById(R.id.idPBLoading);
 
+        // Con estas dos lineas verificamos si la db tiene registros o no, si si, nos vamos directo al listado
+//        int dbCount = dbHandler.countItems();
+//        Log.d("DATAdbCount", String.valueOf(dbCount));
+
         getDataFromAPI(fileURL);
     }
 
+
+    private void createDB() {
+        dbHandler.deleteAllItems();
+
+        Log.d("DATAarraySize", String.valueOf(itemModalArrayList.size()));
+
+        for (int i = 0; i < itemModalArrayList.size(); i++) {
+            ItemModal itemModal = itemModalArrayList.get(i);
+
+            String itemDescriptionTxt = itemModal.getDescription();
+            String itemBrandTxt = itemModal.getBrand();
+            String itemRcTxt = itemModal.getRc();
+            String itemImageTxt = itemModal.getImage();
+            String itemLocationTxt = itemModal.getLocation();
+            String itemGpsTxt = itemModal.getGps();
+
+            dbHandler.addNewItem(itemDescriptionTxt, itemBrandTxt, itemRcTxt, itemImageTxt, itemLocationTxt, itemGpsTxt);
+        }
+        Toast.makeText(MainActivity.this, "DB created", Toast.LENGTH_LONG).show();
+    }
 
     private void getDataFromAPI(String url) {
 
@@ -123,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                             String lastLocation = getArrayItemValueAt(arrayC, 16, "v");
 
-                            itemModalArrayList.add( new ItemModal(description, brand, rc, imageLink, lastLocation) );
+                            itemModalArrayList.add( new ItemModal(description, brand, rc, imageLink, lastLocation, "0,0") );
 
     //                        Passing array list to our adapter class
                             itemRVAdapter = new ItemRVAdapter(itemModalArrayList, MainActivity.this);
