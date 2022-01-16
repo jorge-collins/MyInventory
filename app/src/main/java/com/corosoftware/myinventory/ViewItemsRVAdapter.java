@@ -41,6 +41,7 @@ public class ViewItemsRVAdapter extends RecyclerView.Adapter<ViewItemsRVAdapter.
         holder.itemBrandTV.setText(modal.getBrand());
         holder.itemRcTV.setText(modal.getRc());
         holder.itemLocationTV.setText(modal.getLocation());
+        holder.itemDateupdatedTV.setText(modal.getDateupdated());
     }
 
     @Override
@@ -52,7 +53,7 @@ public class ViewItemsRVAdapter extends RecyclerView.Adapter<ViewItemsRVAdapter.
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         // creating variables for our text views.
-        private TextView itemDescriptionTV, itemBrandTV, itemRcTV, itemLocationTV;
+        private TextView itemDescriptionTV, itemBrandTV, itemRcTV, itemLocationTV, itemDateupdatedTV;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -61,6 +62,7 @@ public class ViewItemsRVAdapter extends RecyclerView.Adapter<ViewItemsRVAdapter.
             itemBrandTV = itemView.findViewById(R.id.idTVItemBrand);
             itemRcTV = itemView.findViewById(R.id.idTVItemRC);
             itemLocationTV = itemView.findViewById(R.id.idTVItemLocation);
+            itemDateupdatedTV = itemView.findViewById(R.id.idTVItemDateupdated);
         }
     }
 }

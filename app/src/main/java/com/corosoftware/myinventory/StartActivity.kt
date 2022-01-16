@@ -1,11 +1,14 @@
 package com.corosoftware.myinventory
 
 import android.content.Intent
+import android.database.sqlite.SQLiteDatabase
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
+import java.text.SimpleDateFormat
+import java.util.*
 
 class StartActivity : AppCompatActivity() {
 
@@ -20,9 +23,17 @@ class StartActivity : AppCompatActivity() {
         btnLoad = findViewById(R.id.bLoad)
         btnView = findViewById(R.id.bView)
 
+
         val db = DBHandler(this)
+//        db.deleteAllItems()
 
         val dbCount = db.countItems()
+
+//        // Para obtener el momento actual en el formato deseado
+//        val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm")
+//        val calendar:Calendar = Calendar.getInstance()
+//        val date:String = dateFormat.format(calendar.time)
+
 
         // Si la base de datos tiene algo, ve directamente a viewItems
         if (dbCount > 0) startViewItemsActivity()

@@ -26,7 +26,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,6 +48,10 @@ public class MainActivity extends AppCompatActivity {
     private ItemRVAdapter itemRVAdapter;
     private RecyclerView itemRV;
     private ProgressBar loadingPB;
+
+    private Calendar calendar;
+    private SimpleDateFormat simpleDateFormat;
+    private String date;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -94,9 +102,8 @@ public class MainActivity extends AppCompatActivity {
         itemRV = findViewById(R.id.idRVItems);
         loadingPB = findViewById(R.id.idPBLoading);
 
-        // Con estas dos lineas verificamos si la db tiene registros o no, si si, nos vamos directo al listado
-//        int dbCount = dbHandler.countItems();
-//        Log.d("DATAdbCount", String.valueOf(dbCount));
+        calendar = Calendar.getInstance();
+        simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
         getDataFromAPI(fileURL);
     }
@@ -105,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
     private void createDB() {
         dbHandler.deleteAllItems();
 
-        Log.d("DATAarraySize", String.valueOf(itemModalArrayList.size()));
+//        Log.d("DATAarraySize", String.valueOf(itemModalArrayList.size()));
 
         for (int i = 0; i < itemModalArrayList.size(); i++) {
             ItemModal itemModal = itemModalArrayList.get(i);
@@ -115,9 +122,10 @@ public class MainActivity extends AppCompatActivity {
             String itemRcTxt = itemModal.getRc();
             String itemImageTxt = itemModal.getImage();
             String itemLocationTxt = itemModal.getLocation();
+            String itemDateupdatedTxt = itemModal.getDateupdated();
             String itemGpsTxt = itemModal.getGps();
 
-            dbHandler.addNewItem(itemDescriptionTxt, itemBrandTxt, itemRcTxt, itemImageTxt, itemLocationTxt, itemGpsTxt);
+            dbHandler.addNewItem(itemDescriptionTxt, itemBrandTxt, itemRcTxt, itemImageTxt, itemLocationTxt, itemDateupdatedTxt, itemGpsTxt);
         }
         Toast.makeText(MainActivity.this, "DB created", Toast.LENGTH_LONG).show();
     }
@@ -165,7 +173,9 @@ public class MainActivity extends AppCompatActivity {
                             }
                             String lastLocation = getArrayItemValueAt(arrayC, 16, "v");
 
-                            itemModalArrayList.add( new ItemModal(description, brand, rc, imageLink, lastLocation, "0,0") );
+                            String dateupdated = simpleDateFormat.format( calendar.getTime() );
+
+                            itemModalArrayList.add( new ItemModal(description, brand, rc, imageLink, lastLocation, dateupdated, "0,0") );
 
     //                        Passing array list to our adapter class
                             itemRVAdapter = new ItemRVAdapter(itemModalArrayList, MainActivity.this);

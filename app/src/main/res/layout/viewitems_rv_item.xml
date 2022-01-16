@@ -29,7 +29,7 @@
             android:orientation="horizontal"
             android:weightSum="2">
 
-            <!--text view for our course tracks-->
+            <!--text view for our brand-->
             <TextView
                 android:id="@+id/idTVItemBrand"
                 android:layout_width="0dp"
@@ -40,7 +40,7 @@
                 android:textColor="@color/black" />
 
 
-            <!--text view for our course duration-->
+            <!--text view for our rc-->
             <TextView
                 android:id="@+id/idTVItemRC"
                 android:layout_width="0dp"
@@ -48,19 +48,38 @@
                 android:layout_weight="1"
                 android:padding="3dp"
                 android:text="idTVItemRC"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
-        <!--text view for our course description-->
-        <TextView
-            android:id="@+id/idTVItemLocation"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="3dp"
-            android:text="idTVItemLocation"
-            android:textColor="@color/black" />
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <!--text view for our location-->
+            <TextView
+                android:id="@+id/idTVItemLocation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="3dp"
+                android:text="idTVItemLocation"
+                android:textColor="@color/black" />
+
+            <!--text view for our date updated-->
+            <TextView
+                android:id="@+id/idTVItemDateupdated"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="3dp"
+                android:text="idTVItemDateupdated"
+                android:textColor="@color/black" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

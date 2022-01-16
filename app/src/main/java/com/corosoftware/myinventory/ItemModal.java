@@ -7,6 +7,7 @@ public class ItemModal {
     private String rc;
     private String image;
     private String location;
+    private String dateupdated;
     private String gps;
     private int id;
 
@@ -50,6 +51,10 @@ public class ItemModal {
 
     public void setGps(String gps) { this.gps = gps; }
 
+    public String getDateupdated() { return dateupdated; }
+
+    public void setDateupdated(String gps) { this.dateupdated = dateupdated; }
+
     public int getId() {
         return id;
     }
@@ -59,13 +64,14 @@ public class ItemModal {
     }
 
     // Constructor
-    public ItemModal(String description, String brand, String rc, String image, String location, String gps) {
+    public ItemModal(String description, String brand, String rc, String image, String location, String dateupdated, String gps) {
 
         this.description = description;
         this.brand = brand;
         this.rc = rc;
         this.image = image;
         this.location = location;
+        this.dateupdated = dateupdated;
         this.gps = gps;
     }
 

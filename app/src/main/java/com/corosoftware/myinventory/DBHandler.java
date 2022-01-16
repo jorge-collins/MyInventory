@@ -15,7 +15,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String DB_NAME = "inventorydb";
 
     // below int is our database version
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
 
     // below variable is for our table name.
     private static final String TABLE_NAME = "myinventory";
@@ -37,6 +37,9 @@ public class DBHandler extends SQLiteOpenHelper {
 
     // below variable for our location column.
     private static final String LOCATION_COL = "location";
+
+    // below variable for our updated column.
+    private static final String DATEUPDATED_COL = "dateupdated";
 
     // below variable for our gps column.
     private static final String GPS_COL = "gps";
@@ -60,6 +63,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 + RC_COL + " TEXT,"
                 + IMAGE_COL + " TEXT,"
                 + LOCATION_COL + " TEXT,"
+                + DATEUPDATED_COL + " TEXT,"
                 + GPS_COL + " TEXT)";
 
         // at last we are calling a exec sql
@@ -73,6 +77,7 @@ public class DBHandler extends SQLiteOpenHelper {
                              String itemRc,
                              String itemImage,
                              String itemLocation,
+                             String itemDateupdated,
                              String itemGps) {
 
         // on below line we are creating a variable for
@@ -91,6 +96,7 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(RC_COL, itemRc);
         values.put(IMAGE_COL, itemImage);
         values.put(LOCATION_COL, itemLocation);
+        values.put(DATEUPDATED_COL, itemDateupdated);
         values.put(GPS_COL, itemGps);
 
         // after adding all values we are passing
@@ -119,7 +125,7 @@ public class DBHandler extends SQLiteOpenHelper {
             do {
                 // on below line we are adding the data from cursor to our array list.
                 itemModalArrayList.add(
-                    new ItemModal( cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6) )
+                    new ItemModal( cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7) )
                 );
             } while (cursor.moveToNext());
             // moving our cursor to next.
