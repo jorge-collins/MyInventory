@@ -23,22 +23,22 @@ public class DBHandler extends SQLiteOpenHelper {
     // below variable is for our id column.
     private static final String ID_COL = "id";
 
-    // below variable for our course description column.
+    // below variable for our description column.
     private static final String DESCRIPTION_COL = "description";
 
-    // below variable for our course description column.
+    // below variable for our brand column.
     private static final String BRAND_COL = "brand";
 
-    // below variable for our course description column.
+    // below variable for our rc column.
     private static final String RC_COL = "rc";
 
-    // below variable is for our course tracks column.
+    // below variable is for our image column.
     private static final String IMAGE_COL = "image";
 
-    // below variable for our course description column.
+    // below variable for our location column.
     private static final String LOCATION_COL = "location";
 
-    // below variable for our course description column.
+    // below variable for our gps column.
     private static final String GPS_COL = "gps";
 
     // creating a constructor for our database handler.

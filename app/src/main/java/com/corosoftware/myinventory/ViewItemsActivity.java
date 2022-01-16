@@ -31,6 +31,9 @@ public class ViewItemsActivity extends AppCompatActivity {
         // list from db handler class.
         itemModalArrayList = dbHandler.readItems();
 
+        // TODO: consultar el total de registros en la db y si no hay ninguno,
+        //  recuperar el putExtra y demas cosas...
+
         // on below line passing our array lost to our adapter class.
         viewItemsRVAdapter = new ViewItemsRVAdapter(itemModalArrayList, ViewItemsActivity.this);
         itemsRV = findViewById(R.id.idRVItems);
